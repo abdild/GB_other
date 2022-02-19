@@ -8,21 +8,119 @@
 // Должна получиться гибкая система, позволяющая динамически менять базу данных и инкапсулирующая взаимодействие с ней внутри продуктов конкретных фабрик. Углубляться в детали компонента не обязательно — достаточно их наличия.
 
 abstract class DBFactory {
-
+    abstract public function DBConnection() : Connection;
+    abstract public function DBRecord() : Record;
+    abstract public function DBQueryBuilder() : Query;
 }
 
-interface DBConnection {}
-interface DBRecord {}
-interface DBQueryBuilder {}
+class MySQL extends DBFactory {
+    public function OracleConnection() : Connection {
+        return new MySQLConnection();
+    }
 
-class MySQLDBConnection implements DBConnection {}
-class PostgreSQLConnection implements DBConnection {}
-class OracleConnection implements DBConnection {}
+    public function OracleRecord() : Record {
+        return new MySQLRecord();
+    }
 
-class MySQLDBRecord implements DBRecord {}
-class PostgreSQLRecord implements DBRecord {}
-class OracleRecord implements DBRecord {}
+    public function OracleQueryBuilder() : Query {
+        return new MySQLQuery();
+    }
+}
 
-class MySQLDBQueryBuilder implements DBQueryBuilder {}
-class PostgreSQLQueryBuilder implements DBQueryBuilder {}
-class OracleQueryBuilder implements DBQueryBuilder {}
+class PostgreSQL extends DBFactory {
+    public function OracleConnection() : Connection {
+        return new PostgreSQLConnection();
+    }
+
+    public function OracleRecord() : Record {
+        return new PostgreSQLRecord();
+    }
+
+    public function OracleQueryBuilder() : Query {
+        return new PostgreSQLQuery();
+    }
+}
+
+class Oracle extends DBFactory {
+    public function OracleConnection() : Connection {
+        return new OracleConnection();
+    }
+
+    public function OracleRecord() : Record {
+        return new OracleRecord();
+    }
+
+    public function OracleQueryBuilder() : Query {
+        return new OracleQuery();
+    }
+}
+
+// Интерфейсы
+interface DBConnection {
+    public function connect() : string;
+}
+
+interface DBRecord {
+    public function record() : string;
+}
+
+interface DBQueryBuilder {
+    public function query() : array;
+}
+
+
+// Реализации интерфейсов
+
+class MySQLConnection implements DBConnection {
+    public function connect() : string {
+        return 'MySQL';
+    }
+}
+
+class PostgreSQLConnection implements DBConnection {
+    public function connect() : string {
+        return 'PostgreSQL';
+    }
+}
+
+class OracleConnection implements DBConnection {
+    public function connect() : string {
+        return 'Oracle';
+    }
+}
+
+class MySQLRecord implements DBRecord {
+    public function record() : string {
+        return 'MySQL';
+    }
+}
+
+class PostgreSQLRecord implements DBRecord {
+    public function record() : string {
+        return 'PostgreSQL';
+    }
+}
+
+class OracleRecord implements DBRecord {
+    public function record() : string {
+        return 'Oracle';
+    }
+}
+
+class MySQLQueryBuilder implements DBQueryBuilder {
+    public function query() : array {
+        return $MySQLResult;
+    }
+}
+
+class PostgreSQLQueryBuilder implements DBQueryBuilder {
+    public function query() : array {
+        return $PostgreSQLResult;
+    }
+}
+
+class OracleQueryBuilder implements DBQueryBuilder {
+    public function query() : array {
+        return $OracleResult;
+    }
+}
